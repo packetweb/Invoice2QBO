@@ -1,0 +1,29 @@
+@import url("https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Serif:wght@500;600&display=swap");
+
+:root {
+  --pm-blue: #0b4f8a;
+  --pm-blue-deep: #083a66;
+  --pm-blue-soft: #e8f1f8;
+  --pm-ink: #1a2330;
+  --pm-muted: #5c6b7a;
+  --pm-line: #d5dee7;
+  --pm-bg: #eef2f6;
+  --pm-surface: #ffffff;
+  --pm-claude: #da7756;
+  --pm-ok: #1f7a3f;
+  font-family: "IBM Plex Sans", sans-serif;
+  color: var(--pm-ink);
+  background: var(--pm-bg);
+  line-height: 1.45;
+}
+
+* { box-sizing: border-box; }
+html, body, #root { margin: 0; min-height: 100%; }
+body {
+  background:
+    radial-gradient(1200px 500px at 10% -10%, rgba(11, 79, 138, 0.12), transparent 55%),
+    linear-gradient(180deg, #f7f9fb 0%, var(--pm-bg) 40%, #e8eef4 100%);
+}
+button, input, select, textarea { font: inherit; }
+button { cursor: pointer; }
+a { color: var(--pm-blue); }
