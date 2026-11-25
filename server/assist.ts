@@ -110,7 +110,7 @@ Rules:
 - billingAddress / shippingAddress: COMPLETE customer addresses — name/company if present, street, city, state/region, postal code, country. Use \\n between lines. Do not put only street line 1. Not PacketMicro's address.
 - Address priority: shippingAddress is required when a ship-to / deliver-to exists (including when the header says "see item" / "in shipment lines"). Use billingAddress only when there is no ship-to.
 - city/state/country/zip: parse from shippingAddress when present, else billingAddress. Still fill these even though the full address is also in shippingAddress/billingAddress.
-- paymentTerms: as written (NET 45, Prepay, Net 30). Keep it short.
+- paymentTerms: the PO payment terms only (NET 45, Prepay, Net 30, Due on receipt). Prefer the header "Payment Terms" / "Terms of Payment" line. Keep it short, e.g. "NET 45" not a sentence.
 - freightTerms: COLLECT, PREPAID, DAP, etc. If freight is collect / customer-paid, shippingAmount is 0.
 - taxExempt: true when the PO says tax-exempt, intra-Community supply, export, or tax-free. A Tax column of "Y" is only a flag — it is not a tax amount. Do not invent tax dollars.
 - shippingAmount: only a number if the PO lists a freight/shipping charge. Otherwise 0.

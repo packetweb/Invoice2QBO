@@ -21,4 +21,4 @@ CRM must be running on `:3000` and connected to QBO. Payment terms are matched l
 1. Drop PO PDF
 2. Claude extracts PO number, customer, bill/ship, terms, lines
 3. SKUs are matched to QBO items. Collect freight stays $0. Do not invent tax for international POs.
-4. Confirm, then **Create QBO Invoice**
+4. Confirm, then **Create QBO Invoice**. Match an existing QBO customer first; if none match, file under **A Temp** (real company name goes in remarks). Never creates a new QBO customer.

@@ -15,6 +15,8 @@ export type LineItem = {
   unitPrice: number
   mapped: boolean
   kind: "item" | "shipping" | "tax"
+  taxable: boolean
+  className?: string
 }
 
 export type PoDraft = {
@@ -35,6 +37,8 @@ export type PoDraft = {
   freightTerms: string
   taxExempt: boolean
   shippingAmount: number
+  qboCustomerId: string
+  allowOnlinePayment: boolean
 }
 
 export type QboTerm = {
@@ -43,4 +47,14 @@ export type QboTerm = {
   type: string
   dueDays: number | null
   active: boolean
+}
+
+export type QboCustomerMatch = {
+  id: string
+  displayName: string
+  companyName: string
+  email: string
+  job: boolean
+  termId?: string
+  termName?: string
 }

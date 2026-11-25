@@ -1,5 +1,5 @@
 import { apiFetch } from "./apiFetch"
-import type { Product, QboTerm } from "../types"
+import type { Product, QboCustomerMatch, QboTerm } from "../types"
 
 export function crmApiBase(): string {
   const port = (import.meta.env.VITE_CRM_PORT_NUM as string | undefined)?.trim() || "3000"
@@ -33,9 +33,23 @@ export async function fetchQboCatalogItems(): Promise<Product[]> {
   return body.items
 }
 
+export async function fetchQboClasses(): Promise<Array<{ id: string; name: string }>> {
+  const body = await crmJson<{ classes?: Array<{ id: string; name: string }> }>("/api/qbo/classes")
+  return Array.isArray(body.classes) ? body.classes.filter((c) => c?.name) : []
+}
+
 export async function fetchQboTerms(): Promise<QboTerm[]> {
   const body = await crmJson<{ terms: QboTerm[] }>("/api/qbo/terms")
   return body.terms || []
+}
+
+export async function searchQboCustomers(q: string): Promise<QboCustomerMatch[]> {
+  const query = q.trim()
+  if (query.length < 2) return []
+  const body = await crmJson<{ customers: QboCustomerMatch[] }>(
+    `/api/qbo/customers?q=${encodeURIComponent(query)}`,
+  )
+  return body.customers || []
 }
 
 export type PoMatch = {
@@ -47,6 +61,42 @@ export type PoMatch = {
   customerName: string
   total: number
   link: string
+}
+
+export type EstimateItem = {
+  sku: string
+  qty: number | null
+}
+
+export type EstimateMatch = {
+  source: string
+  estimateId: string
+  docNumber: string | null
+  txnDate: string | null
+  status: string
+  total: number
+  customerName: string
+  converted: boolean
+  items?: EstimateItem[]
+  extra?: number
+  skus: string[]
+  link: string
+}
+
+export async function fetchEstimatesForCustomer(
+  qboId: string,
+  company = "",
+): Promise<EstimateMatch[]> {
+  const id = qboId.trim()
+  const name = company.trim()
+  if (!id && !name) return []
+  const q = new URLSearchParams()
+  if (id) q.set("qbo_id", id)
+  if (name) q.set("company", name)
+  const body = await crmJson<{ estimates: EstimateMatch[] }>(
+    `/api/qbo/estimates-for-customer?${q.toString()}`,
+  )
+  return body.estimates || []
 }
 
 export async function fetchInvoicesByPo(poNumber: string): Promise<PoMatch[]> {
@@ -69,11 +119,23 @@ export type CreatedInvoice = {
   subtotal: number
   link: string
   createdAt: string
+  usedTempCustomer?: boolean
 }
 
 export async function fetchCreatedInvoices(): Promise<CreatedInvoice[]> {
   const body = await crmJson<{ invoices: CreatedInvoice[] }>("/api/qbo/created-invoices")
   return body.invoices || []
+}
+
+export async function fetchTempCustomer(): Promise<{ id: string; displayName: string; created: boolean }> {
+  const body = await crmJson<{ created?: boolean; customer: { id: string; displayName: string } }>(
+    "/api/qbo/temp-customer",
+  )
+  return {
+    id: body.customer.id,
+    displayName: body.customer.displayName,
+    created: Boolean(body.created),
+  }
 }
 
 export type CreateInvoiceResult = {
@@ -83,6 +145,8 @@ export type CreateInvoiceResult = {
   link: string
   customerId: string
   createdNewCustomer: boolean
+  usedTempCustomer?: boolean
+  customerDisplayName?: string
   term: { id: string; name: string } | null
   createdAt: string
 }
